@@ -1,0 +1,72 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from sklearn import metrics
+from sklearn.metrics import confusion_matrix,precision_score,recall_score,f1_score
+%matplotlib inline
+df=pd.read_csv("diabetes_data_upload (1).csv")
+df
+df.head()
+df.shape
+print(df.info())
+df.isnull().sum()
+df.describe()
+plt.figure(figsize=(20,20))
+pltnum=1
+for columns in df:
+  if columns !='Age':  
+   if pltnum <= 17:
+     ax = plt.subplot(4,4,pltnum)
+     sns.countplot(x=df[columns],data=df)  
+   pltnum=pltnum+1
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
+
+plt.figure(figsize=(20,10))
+sns.countplot(df.Age) 
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+for col in df.columns[~(df.columns.isin(['Age']))].tolist():
+    df[col] = le.fit_transform(df[col])
+df
+x= df.drop('class',axis=1)
+y = df['class']
+x
+y
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=0)
+print(x_train.shape)
+print(y_train.shape)
+print(x_test.shape)
+print(y_test.shape)
+model=RandomForestClassifier()
+model.fit(x_train,y_train)
+y_pred = model.predict(x_test)
+y_pred1 = model.predict(x_train)
+y_pred
+y_test
+print("Accuracy_score for Testing :",accuracy_score(y_test,y_pred))
+y_pred = model.predict(x_test)
+cm = confusion_matrix(y_test,y_pred)
+sns.heatmap(cm, cbar=False,annot=True)
+plt.show()
+print(metrics.classification_report(y_test, y_pred, digits=3))
+input_data  = (40,1,0,1,0,1,0,0,0,1,0,1,0,1,1,1)
+input_data_as_numpy_array = np.asarray(input_data)
+input_data_reshaped = input_data_as_numpy_array.reshape(1,-1)
+prediction = model.predict(input_data_reshaped)
+if(prediction[0]==1):
+    print("Positive")
+else:
+    print("Negative")
+input_data  = (32,0,0,0,0,1,0,0,1,1,0,1,0,0,1,0)
+input_data_as_numpy_array = np.asarray(input_data)
+input_data_reshaped = input_data_as_numpy_array.reshape(1,-1)
+prediction = model.predict(input_data_reshaped)
+if(prediction[0]==1):
+    print("Positive")
+else:
+    print("Negative") 
